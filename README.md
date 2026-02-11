@@ -68,14 +68,17 @@ Security and limits (configurable via `.env`):
 #### Province choropleth (program count)
 ![Choropleth map](docs/images/map-program-count.png)
 
-#### API (FastAPI OpenAPI)
-![OpenAPI](docs/images/program-search.png)
+#### API list + filters
+![Program list](docs/images/program-filter.png)
+
+#### Discipline lookup
+![Disciplines](docs/images/disciplines-search.png)
 
 #### Pipelines (Dagster assets)
 ![Dagster](docs/images/dagster-assets.png)
 
-#### Optional: gold tables view
-![Gold tables](docs/images/db-gold-table.png)
+#### Program detail view
+![Program detail](docs/images/program-view.png)
 
 
 ### Roadmap
