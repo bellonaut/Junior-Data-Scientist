@@ -31,6 +31,7 @@ PID_FILE=".ui-demo.pid"
 API_PORT="${API_PORT:-8000}"
 DB_URL="${DB_URL:-sqlite:///./demo.db}"
 ENV="${ENV:-demo}"
+PYTHONPATH="${PYTHONPATH:-}"
 
 [ -f "$REQ_FILE" ] || fail "Missing $REQ_FILE; run from repo root."
 
@@ -45,6 +46,7 @@ log "Installing UI demo dependencies..."
 python -m pip install --quiet --upgrade pip
 python -m pip install --quiet -r "$REQ_FILE"
 
+export PYTHONPATH="${ROOT_DIR}${PYTHONPATH:+:$PYTHONPATH}"
 export DB_URL ENV
 log "Using DB_URL=$DB_URL (SQLite demo)"
 

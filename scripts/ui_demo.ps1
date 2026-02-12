@@ -37,6 +37,7 @@ Log "Installing UI demo dependencies..."
 if (-not $env:DB_URL) { $env:DB_URL = "sqlite:///./demo.db" }
 if (-not $env:ENV) { $env:ENV = "demo" }
 if (-not $env:DAGSTER_GRAPHQL_URL) { $env:DAGSTER_GRAPHQL_URL = "http://localhost:3000/graphql" }
+$env:PYTHONPATH = if ($env:PYTHONPATH) { "$root;$env:PYTHONPATH" } else { "$root" }
 
 Log "Using DB_URL=$env:DB_URL (SQLite demo)"
 
