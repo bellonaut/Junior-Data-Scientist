@@ -1,6 +1,6 @@
 # CaRMS Analytics Platform
 
-Built by Bashir ("bellonaut") Bello. I love intuitive interactive maps (see [https://bashir-healthdesert.streamlit.app](url) via [https://github.com/bellonaut/health-desert-scorer](url)) so thats where the province chloropeth came from. Then selfishly my little brother will be an IMG soon, so I lean towards that data prism a little more in insights. (see [docs/insights.html](docs/insights.html))
+Built by Bashir ("bellonaut") Bello. I love intuitive, interactive maps--see the [Health Desert explorer](https://bashir-healthdesert.streamlit.app) built from the [health-desert-scorer](https://github.com/bellonaut/health-desert-scorer) repo--so the province choropleth comes from that obsession. My younger brother will be an IMG soon, so the insights lean toward that lens; check the static write-up at [docs/insights.html](docs/insights.html).
 
 ### What it is
 An end-to-end, production-style data platform for the public CaRMS residency program dataset. It ingests raw Excel/CSV extracts, shapes them into bronze -> silver -> gold tables with Dagster and Postgres (pgvector-ready), and serves both program search APIs and a province-level choropleth map via FastAPI. The goal is to showcase systems thinking for a junior data scientist focused on data engineering, analytics, and delivery.
@@ -119,3 +119,5 @@ Security and limits (configurable via `.env`):
 
 ### License
 MIT
+
+More about me: [www.bashir.bio](https://www.bashir.bio)
