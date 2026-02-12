@@ -35,15 +35,15 @@ An end-to-end, production-style data platform for the public CaRMS residency pro
 - gold_program_profile — curated program metadata plus concatenated descriptions.
 - gold_geo_summary — province x discipline rollups with program counts and avg quota.
 
-### One-click demo (fast path)
-- Docker path (recommended):
+### One-click demo (choose your path)
+- UI-only path (no Docker, no Dagster; seeded SQLite data):
+  - macOS/Linux: `make ui-demo`
+  - Windows: `powershell -ExecutionPolicy Bypass -File scripts/ui_demo.ps1`
+  - What it does: creates `.venv-demo`, installs `requirements-ui-demo.txt`, applies Alembic to `demo.db`, seeds synthetic gold/discipline tables, starts FastAPI on port 8000, and opens `/docs` + `/map`. Ideal when Docker isn't available.
+- Full platform (Docker + Dagster + Postgres):
   - macOS/Linux: `make demo`
   - Windows (no make required): `powershell -ExecutionPolicy Bypass -File scripts/demo.ps1`  
   - What it does: builds images, applies migrations, materializes all assets, waits for health, then opens Dagster UI, API docs, program list, and the map.
-- No-Docker path (SQLite, lighter deps):
-  - macOS/Linux: `make demo-local`
-  - Windows: `powershell -ExecutionPolicy Bypass -File scripts/demo_local.ps1`
-  - Creates `.venv-demo`, installs `requirements-demo.txt` (no heavy ML deps), runs migrations + assets in SQLite, starts Dagster UI and FastAPI locally, and opens the same pages. Ports 3000/8000 must be free.
 
 ### Run it in 10 minutes (manual)
 1. `cp .env.example .env`
@@ -54,7 +54,6 @@ An end-to-end, production-style data platform for the public CaRMS residency pro
 
 If ports are in use from an earlier run, stop and reset:
 - Docker: `docker-compose down -v`
-- Local: `xargs kill < .demo-local.pids` (or the PowerShell equivalent printed by the script) and remove `demo.db` if you want a fresh load.
 
 ### Endpoints
 | Method | Path | Purpose | Key params |
