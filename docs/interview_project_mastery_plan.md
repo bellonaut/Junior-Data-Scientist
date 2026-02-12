@@ -1,3 +1,25 @@
+# CaRMS Project Mastery Plan (Updated)
+
+_Last update: 2026-02-12 — semantic search foundation shipped._
+
+This guide is designed to help you build **deep, end-to-end ownership** of this project across architecture, data, code, runtime behavior, and product/DS extension ideas.
+
+---
+
+## What changed in this update
+- Added pgvector-backed table `gold_program_embedding` via Alembic migration `20260212_0002`.
+- New Dagster asset `gold_program_embeddings` that encodes `gold_program_profile.description_text` with `all-MiniLM-L6-v2`.
+- New FastAPI endpoint `POST /semantic/query` for semantic search (optional LangChain QA summary when `OPENAI_API_KEY` is set).
+- API contract + README refreshed to include the semantic endpoint and new gold table.
+- Dependencies updated to include `langchain`, `langchain-community`, and `langchain-openai`.
+
+## Workstreams still planned
+1) Match simulation / what-if engine (`carms/analytics/simulation.py`, `/analytics/simulate`).  
+2) Preference modeling (`carms/analytics/preferences.py`, `/analytics/preferences`).  
+3) AWS deployment path (Terraform for RDS + ECS + ECR + S3; CI plan).  
+
+---
+
 # CaRMS Project Mastery Plan (Interview-Focused)
 
 This guide is designed to help you build **deep, end-to-end ownership** of this project across architecture, data, code, runtime behavior, and product/DS extension ideas.

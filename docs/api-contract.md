@@ -48,6 +48,17 @@
 - `GET /map/data.json` (province rollup JSON: province, name, lat, lon, programs)
 - `GET /map/canada.geojson` (static GeoJSON)
 
+### `POST /semantic/query`
+- Purpose: semantic search over program descriptions with optional LangChain Q&A summarization.
+- Body:
+  - `query` (str, required)
+  - `province` (str, optional, code filter)
+  - `discipline` (str, optional, substring filter)
+  - `top_k` (int, default 5, min 1, max 20)
+- Responses:
+  - `200` with `{hits: [program_stream_id, names, province, discipline, similarity, description_snippet], answer?, top_k}`
+  - `422` when top_k is out of bounds.
+
 ## Error envelope
 - Validation: FastAPI default `422 Unprocessable Entity` with details.
 - Auth: `401` with message when API key invalid/missing.

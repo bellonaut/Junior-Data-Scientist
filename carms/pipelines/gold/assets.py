@@ -1,11 +1,13 @@
 from collections import defaultdict
+from functools import lru_cache
 from typing import Dict, List, Optional, Tuple
 
 from dagster import AssetIn, asset
+from sentence_transformers import SentenceTransformer
 from sqlmodel import Session, delete, select
 
 from carms.core.database import engine
-from carms.models.gold import GoldGeoSummary, GoldProgramProfile
+from carms.models.gold import GoldGeoSummary, GoldProgramEmbedding, GoldProgramProfile
 from carms.models.silver import SilverDescriptionSection, SilverProgram
 
 DESCRIPTION_SECTION_ORDER = [
@@ -86,6 +88,46 @@ def gold_program_profiles(
         session.add_all(gold_rows)
         session.commit()
         return len(gold_rows)
+
+
+@lru_cache(maxsize=1)
+def _get_embedding_model() -> SentenceTransformer:
+    # MiniLM keeps footprint small while producing solid general-purpose embeddings.
+    return SentenceTransformer("all-MiniLM-L6-v2")
+
+
+@asset(
+    group_name="gold",
+    ins={"gold_program_profiles": AssetIn("gold_program_profiles")},
+)
+def gold_program_embeddings(gold_program_profiles) -> int:  # type: ignore[unused-argument]
+    model = _get_embedding_model()
+
+    with Session(engine) as session:
+        profiles = session.exec(select(GoldProgramProfile)).all()
+        session.exec(delete(GoldProgramEmbedding))
+
+        rows: List[GoldProgramEmbedding] = []
+        for program in profiles:
+            if not program.description_text:
+                # Skip empty descriptions; still allow querying profile table directly.
+                continue
+            embedding = model.encode(program.description_text, normalize_embeddings=True).tolist()
+            rows.append(
+                GoldProgramEmbedding(
+                    program_stream_id=program.program_stream_id,
+                    program_name=program.program_name,
+                    program_stream_name=program.program_stream_name,
+                    discipline_name=program.discipline_name,
+                    province=program.province,
+                    description_text=program.description_text,
+                    embedding=embedding,
+                )
+            )
+
+        session.add_all(rows)
+        session.commit()
+        return len(rows)
 
 
 @asset(

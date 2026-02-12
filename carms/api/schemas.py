@@ -29,3 +29,26 @@ class ProgramListResponse(BaseModel):
     limit: int
     offset: int
     total: Optional[int] = None
+
+
+class SemanticQueryRequest(BaseModel):
+    query: str
+    province: Optional[str] = None
+    discipline: Optional[str] = None
+    top_k: int = 5
+
+
+class SemanticHit(BaseModel):
+    program_stream_id: int
+    program_name: str
+    program_stream_name: str
+    discipline_name: str
+    province: str
+    similarity: float
+    description_snippet: Optional[str] = None
+
+
+class SemanticQueryResponse(BaseModel):
+    hits: List[SemanticHit]
+    answer: Optional[str] = None
+    top_k: int

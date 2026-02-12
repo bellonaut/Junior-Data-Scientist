@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from carms.api.deps import rate_limit, require_api_key
-from carms.api.routes import disciplines, geomap, pipeline, programs
+from carms.api.routes import disciplines, geomap, pipeline, programs, semantic
 
 
 @asynccontextmanager
@@ -38,6 +38,7 @@ def create_app() -> FastAPI:
     app.include_router(disciplines.router)
     app.include_router(pipeline.router)
     app.include_router(geomap.router)
+    app.include_router(semantic.router)
 
     class HealthResponse(BaseModel):
         status: str

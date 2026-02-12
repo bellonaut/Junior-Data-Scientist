@@ -41,6 +41,7 @@ An end-to-end, production-style data platform for the public CaRMS residency pro
 - silver_program - cleaned columns, province derivation, quota parsing, validity flags.
 - silver_description_section - unpivoted description text per section.
 - gold_program_profile - curated program metadata plus concatenated descriptions.
+- gold_program_embedding - pgvector embeddings from gold descriptions for semantic search.
 - gold_geo_summary - province x discipline rollups with program counts and avg quota.
 
 ### UI-only demo (FastAPI + seeded SQLite)
@@ -75,6 +76,7 @@ If ports are in use from an earlier run, stop and reset:
 | GET | `/map` | Choropleth HTML | - |
 | GET | `/map/data.json` | Province rollup JSON | - |
 | GET | `/map/canada.geojson` | GeoJSON | - |
+| POST | `/semantic/query` | Semantic search with optional LangChain QA summary | query, province?, discipline?, top_k |
 
 Security and limits (configurable via `.env`):
 - X-API-Key header enforced when `API_KEY` is set.
@@ -108,7 +110,7 @@ Security and limits (configurable via `.env`):
 
 
 ### Roadmap
-- Add semantic search over `gold_program_profile` using pgvector and LangChain.
+- Expand preference modeling + scenario simulation with stored results.
 - Performance notes: [docs/performance.md](docs/performance.md)
 - Schedule Dagster runs with data quality checks and freshness alerts.
 - Deploy a lightweight demo (RDS + ECS/Fargate or Fly) with CI (pytest + ruff).
