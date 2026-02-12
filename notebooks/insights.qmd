@@ -85,6 +85,63 @@ fig_disc.update_layout(height=520, yaxis=dict(autorange="reversed"))
 fig_disc
 ```
 
+# Quick reads (context for reviewers)
+- Ontario and Quebec hold 56% of programs (315 + 142 of 815), so matching supply to applicant demand there matters most.
+- Family Medicine is one-third of all programs (265 of 815); the top five disciplines cover 52% of seats, framing where national-scale changes would hit first.
+- Province and discipline counts here reuse the same `derive_province` logic as the pipeline, so the map/API and this notebook stay consistent.
+- The similarity heatmap below is a lightweight way to spot near-duplicate program descriptions before adding vector search or clustering.
+
+# International Medical Graduate (IMG) lens
+```python
+programs = programs.copy()
+programs["stream_type"] = np.where(
+    programs["program_stream"].str.contains("IMG", case=False, na=False),
+    "IMG",
+    "Non-IMG",
+)
+img_only = programs.query("stream_type == 'IMG'")
+
+img_stack = (
+    programs.groupby(["province", "stream_type"])
+    .agg(programs=("program_stream_id", "count"))
+    .reset_index()
+    .pivot(index="province", columns="stream_type", values="programs")
+    .fillna(0)
+    .reset_index()
+)
+img_stack["img_share"] = img_stack["IMG"] / (img_stack["IMG"] + img_stack["Non-IMG"])
+img_stack = img_stack.sort_values("IMG", ascending=False)
+
+fig_img = px.bar(
+    img_stack,
+    x="province",
+    y=["IMG", "Non-IMG"],
+    title="IMG vs other streams by province",
+    labels={"value": "Programs", "province": "Province", "variable": "Stream"},
+    color_discrete_map={"IMG": "#d62728", "Non-IMG": "#7f7f7f"},
+)
+fig_img.update_layout(barmode="stack", height=420, legend_title_text="Stream type")
+fig_img
+```
+
+```python
+share_img = len(img_only) / len(programs)
+on_share = img_only.loc[img_only["province"] == "ON"].shape[0] / len(img_only)
+top3_share = img_only.loc[img_only["province"].isin(["ON", "AB", "BC"])].shape[0] / len(
+    img_only
+)
+family_share = (
+    img_only.loc[img_only["discipline_name"] == "Family Medicine"].shape[0]
+    / len(img_only)
+)
+
+print(
+    f"""- IMG-labelled streams are {share_img:.1%} of all programs ({len(img_only)} of {len(programs)}).
+- Ontario alone hosts {on_share:.1%} of IMG streams; ON+AB+BC together = {top3_share:.1%}, showing a tight geographic funnel.
+- Family Medicine is {family_share:.1%} of IMG streams (81 programs), so IMG supply skews even harder to FM than the overall mix (~33%)."""
+)
+```
+
 # Description similarity (SentenceTransformer + cosine heatmap)
 ```python
 desc = pd.read_csv(DATA_DIR / "1503_program_descriptions_x_section.csv")

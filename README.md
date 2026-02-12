@@ -3,6 +3,12 @@
 ### What it is
 An end-to-end, production-style data platform for the public CaRMS residency program dataset. It ingests raw Excel/CSV extracts, shapes them into bronze -> silver -> gold tables with Dagster and Postgres (pgvector-ready), and serves both program search APIs and a province-level choropleth map via FastAPI. The goal is to showcase systems thinking for a junior data scientist focused on data engineering, analytics, and delivery.
 
+### Demo options (pick one)
+| Mode | Stack | Data path | Run (macOS/Linux) | Run (Windows) | Opens |
+|------|-------|-----------|-------------------|---------------|-------|
+| UI-only demo | FastAPI + SQLite | Synthetic seed into gold tables | `make ui-demo` | `powershell -ExecutionPolicy Bypass -File scripts/ui_demo.ps1` | /docs, /map (FastAPI only) |
+| Full platform demo | Docker: Postgres + Dagster + API | Dagster materializes bronze → silver → gold | `make demo` | `powershell -ExecutionPolicy Bypass -File scripts/demo.ps1` | Dagster UI :3000, /docs, /map |
+
 ### Architecture (ASCII)
 ```
            +-------------+
@@ -35,15 +41,15 @@ An end-to-end, production-style data platform for the public CaRMS residency pro
 - gold_program_profile — curated program metadata plus concatenated descriptions.
 - gold_geo_summary — province x discipline rollups with program counts and avg quota.
 
-### One-click demo (choose your path)
-- UI-only path (no Docker, no Dagster; seeded SQLite data):
-  - macOS/Linux: `make ui-demo`
-  - Windows: `powershell -ExecutionPolicy Bypass -File scripts/ui_demo.ps1`
-  - What it does: creates `.venv-demo`, installs `requirements-ui-demo.txt`, applies Alembic to `demo.db`, seeds synthetic gold/discipline tables, starts FastAPI on port 8000, and opens `/docs` + `/map`. Ideal when Docker isn't available.
-- Full platform (Docker + Dagster + Postgres):
-  - macOS/Linux: `make demo`
-  - Windows (no make required): `powershell -ExecutionPolicy Bypass -File scripts/demo.ps1`  
-  - What it does: builds images, applies migrations, materializes all assets, waits for health, then opens Dagster UI, API docs, program list, and the map.
+### UI-only demo (FastAPI + seeded SQLite)
+- Commands: `make ui-demo` (macOS/Linux) OR `powershell -ExecutionPolicy Bypass -File scripts/ui_demo.ps1` (Windows).
+- Starts FastAPI on http://localhost:8000; opens Swagger at `/docs` and the map at `/map`.
+- Seeds synthetic gold tables so `/programs` and `/map` return data; `/pipeline/run` is not available here.
+
+### Full platform demo (Docker + Dagster + Postgres)
+- Commands: `make demo` (macOS/Linux) OR `powershell -ExecutionPolicy Bypass -File scripts/demo.ps1` (Windows).
+- Builds/starts Docker Compose, applies Alembic in the container, materializes assets bronze→silver→gold.
+- Opens Dagster UI at http://localhost:3000 plus FastAPI `/docs` and `/map` on http://localhost:8000.
 
 ### Run it in 10 minutes (manual)
 1. `cp .env.example .env`
@@ -53,7 +59,8 @@ An end-to-end, production-style data platform for the public CaRMS residency pro
 5. Check API docs at `http://localhost:8000/docs` and the map at `http://localhost:8000/map`.
 
 If ports are in use from an earlier run, stop and reset:
-- Docker: `docker-compose down -v`
+- UI-only: remove `.venv-demo` and `demo.db`, then rerun the script.
+- Full platform: `docker compose down -v`
 
 ### Endpoints
 | Method | Path | Purpose | Key params |
@@ -77,6 +84,9 @@ Security and limits (configurable via `.env`):
 3) In Dagster (`http://localhost:3000`), open job `carms_job` to show the bronze/silver/gold asset graph.  
 4) Open `/map`, toggle choropleth vs bubble, hover a province to show counts and share.  
 5) Mention optional API key plus rate limiting and point to `docs/api-contract.md`.
+
+### Insights notebook
+- Static HTML render with province/discipline mix, IMG lens, and description similarity: [docs/insights.html](docs/insights.html)
 
 ### Screenshots
 #### Province choropleth (program count)
