@@ -1,5 +1,7 @@
 # CaRMS Analytics Platform
 
+Built by Bashir ("bellonaut") Bello. I love intuitive interactive maps (see https://github.com/bellonaut/health-desert-scorer so thats where the province chloropeth came from. Then selfishly my little brother will be an IMG soon, so I lean towards that data prism a little more in insights. (see [docs/insights.html](docs/insights.html))
+
 ### What it is
 An end-to-end, production-style data platform for the public CaRMS residency program dataset. It ingests raw Excel/CSV extracts, shapes them into bronze -> silver -> gold tables with Dagster and Postgres (pgvector-ready), and serves both program search APIs and a province-level choropleth map via FastAPI. The goal is to showcase systems thinking for a junior data scientist focused on data engineering, analytics, and delivery.
 
@@ -7,7 +9,7 @@ An end-to-end, production-style data platform for the public CaRMS residency pro
 | Mode | Stack | Data path | Run (macOS/Linux) | Run (Windows) | Opens |
 |------|-------|-----------|-------------------|---------------|-------|
 | UI-only demo | FastAPI + SQLite | Synthetic seed into gold tables | `make ui-demo` | `powershell -ExecutionPolicy Bypass -File scripts/ui_demo.ps1` | /docs, /map (FastAPI only) |
-| Full platform demo | Docker: Postgres + Dagster + API | Dagster materializes bronze → silver → gold | `make demo` | `powershell -ExecutionPolicy Bypass -File scripts/demo.ps1` | Dagster UI :3000, /docs, /map |
+| Full platform demo | Docker: Postgres + Dagster + API | Dagster materializes bronze -> silver -> gold | `make demo` | `powershell -ExecutionPolicy Bypass -File scripts/demo.ps1` | Dagster UI :3000, /docs, /map |
 
 ### Architecture (ASCII)
 ```
@@ -35,11 +37,11 @@ An end-to-end, production-style data platform for the public CaRMS residency pro
 ```
 
 ### Data layers
-- bronze_program / bronze_discipline / bronze_description — raw CaRMS extracts as-is.
-- silver_program — cleaned columns, province derivation, quota parsing, validity flags.
-- silver_description_section — unpivoted description text per section.
-- gold_program_profile — curated program metadata plus concatenated descriptions.
-- gold_geo_summary — province x discipline rollups with program counts and avg quota.
+- bronze_program / bronze_discipline / bronze_description - raw CaRMS extracts as-is.
+- silver_program - cleaned columns, province derivation, quota parsing, validity flags.
+- silver_description_section - unpivoted description text per section.
+- gold_program_profile - curated program metadata plus concatenated descriptions.
+- gold_geo_summary - province x discipline rollups with program counts and avg quota.
 
 ### UI-only demo (FastAPI + seeded SQLite)
 - Commands: `make ui-demo` (macOS/Linux) OR `powershell -ExecutionPolicy Bypass -File scripts/ui_demo.ps1` (Windows).
@@ -48,7 +50,7 @@ An end-to-end, production-style data platform for the public CaRMS residency pro
 
 ### Full platform demo (Docker + Dagster + Postgres)
 - Commands: `make demo` (macOS/Linux) OR `powershell -ExecutionPolicy Bypass -File scripts/demo.ps1` (Windows).
-- Builds/starts Docker Compose, applies Alembic in the container, materializes assets bronze→silver→gold.
+- Builds/starts Docker Compose, applies Alembic in the container, materializes assets bronze -> silver -> gold.
 - Opens Dagster UI at http://localhost:3000 plus FastAPI `/docs` and `/map` on http://localhost:8000.
 
 ### Run it in 10 minutes (manual)
@@ -65,14 +67,14 @@ If ports are in use from an earlier run, stop and reset:
 ### Endpoints
 | Method | Path | Purpose | Key params |
 |--------|------|---------|------------|
-| GET | `/health` | Liveness | – |
+| GET | `/health` | Liveness | - |
 | GET | `/programs` | List/search programs | discipline, province, school, limit, offset, include_total, preview_chars |
 | GET | `/programs/{program_stream_id}` | Program detail | program_stream_id |
-| GET | `/disciplines` | Active discipline lookup | – |
-| POST | `/pipeline/run` | Trigger Dagster carms_job via GraphQL | – |
-| GET | `/map` | Choropleth HTML | – |
-| GET | `/map/data.json` | Province rollup JSON | – |
-| GET | `/map/canada.geojson` | GeoJSON | – |
+| GET | `/disciplines` | Active discipline lookup | - |
+| POST | `/pipeline/run` | Trigger Dagster carms_job via GraphQL | - |
+| GET | `/map` | Choropleth HTML | - |
+| GET | `/map/data.json` | Province rollup JSON | - |
+| GET | `/map/canada.geojson` | GeoJSON | - |
 
 Security and limits (configurable via `.env`):
 - X-API-Key header enforced when `API_KEY` is set.
@@ -110,6 +112,10 @@ Security and limits (configurable via `.env`):
 - Performance notes: [docs/performance.md](docs/performance.md)
 - Schedule Dagster runs with data quality checks and freshness alerts.
 - Deploy a lightweight demo (RDS + ECS/Fargate or Fly) with CI (pytest + ruff).
+
+### Sharing a clean copy
+- Source data now lives under `data/`; heavy root archives were removed to keep the repo lean.
+- After staging/committing, create a slim zip for HR with: `git archive --format=zip -o carms_hr.zip HEAD`.
 
 ### License
 MIT

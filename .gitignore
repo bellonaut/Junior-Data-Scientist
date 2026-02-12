@@ -14,3 +14,7 @@ demo.db
 ipynb_checkpoints/
 .quarto/
 **/.quarto/
+# Remove bulky source archives from root; keep curated copies under data/
+1503_*.zip
+program_descriptions.zip
+carms_hr.zip

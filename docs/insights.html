@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Bashir Aminu Bello (bellonaut)">
+<meta name="author" content="Bashir Bello">
 
 <title>CaRMS Program Insights</title>
 <style>
@@ -108,7 +108,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Author</div>
     <div class="quarto-title-meta-contents">
-             <p>Data Platform Team </p>
+             <p>Bashir Bello ("Bellonaut").</p>
           </div>
   </div>
     
@@ -124,14 +124,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="purpose" class="level1">
 <h1>Purpose</h1>
 <p>Lightweight analytical slices on the public CaRMS program data, matching the gold-layer use cases (geography rollups, discipline mix, description similarity). All code runs locally with the raw extracts; no database required.</p>
+<p>Personal lens: half of my family are IMGs, so I focused on how provinces and disciplines treat IMG streams.</p>
 </section>
 <section id="data-at-a-glance" class="level1">
 <h1>Data at a glance</h1>
 <ul>
-<li>Source: CaRMS public program extract included in this repo (<code>data/1503_program_master.xlsx</code>) plus description sections (<code>1503_program_descriptions_x_section.csv</code> in the zip).</li>
+<li>Source: CaRMS public program extract included in this repo (<code>data/1503_program_master.xlsx</code>) plus description sections from <code>data/1503_program_descriptions_x_section/1503_program_descriptions_x_section.csv</code>.</li>
 <li>Scope: 815 program streams across 37 disciplines and 18 schools; provinces derived via the same <code>derive_province</code> helper used in the pipeline (8 provinces observed).</li>
 <li>Stream meaning: entries are program streams (CMG, IMG, RoS, etc.), not seat counts. Use caution when inferring capacity.</li>
-<li>Cycle tag: “1503” corresponds to the extract shipped with this homework repo; no applicant outcomes are included.</li>
+<li>Cycle tag: "1503" corresponds to the extract shipped with this homework repo; no applicant outcomes are included.</li>
 <li>Missing pieces: no match/offer results, quotas, or applicant metadata, so insights focus on supply-side structure and text content.</li>
 </ul>
 </section>
